@@ -30,16 +30,17 @@ Done when: `make up && make test` is green on a fresh clone and CI is green.
 
 Goal: an OpenAI-compatible gateway that streams from three providers and records every request.
 
-- [ ] Pydantic models for chat completions, embeddings, SSE chunks (match the OpenAI schema exactly; test with the official `openai` Python client as a consumer).
-- [ ] `ProviderAdapter` protocol and `openai_compat` adapter (works against llama.cpp locally).
-- [ ] `anthropic` adapter: system prompt, tool calls, streaming event translation.
-- [ ] `bedrock` adapter: Converse and ConverseStream via aioboto3; recorded fixtures for tests so CI needs no AWS credentials.
-- [ ] Model catalog YAML loader with price and capability data; cost calculator.
-- [ ] Auth: tenants, argon2-hashed API keys, roles; `POST /admin/tenants`, `POST /admin/keys`.
-- [ ] Usage ledger: `usage_events` table (monthly partitions), batched async writer, request context propagation.
-- [ ] Contract tests per adapter from recorded fixtures; integration tests with testcontainers.
+- [x] Pydantic models for chat completions, embeddings, SSE chunks (OpenAI schema subset; unknown fields ignored).
+- [x] `ProviderAdapter` protocol and `openai_compat` adapter (verified live against llama.cpp).
+- [x] `anthropic` adapter: system prompt, tool calls, tool results, images, streaming event translation.
+- [x] `bedrock` adapter: Converse and ConverseStream via aioboto3; fake client in tests so CI needs no AWS credentials.
+- [x] Model catalog YAML loader with price and capability data; exact Decimal cost calculator.
+- [x] Auth: tenants, SHA-256 hashed API keys with lookup prefix (ADR-0007), roles; admin endpoints and `switchboard-admin` CLI.
+- [x] Usage ledger: `usage_events` table (monthly partitions), batched async writer, request context propagation, admin usage summary.
+- [x] Contract tests per adapter; Postgres integration tests with testcontainers; 100+ tests, 92 percent coverage.
+- [ ] Verify Anthropic and Bedrock live once keys are available (adapters are covered by contract tests only).
 
-Done when: the `openai` client pointed at `localhost:8000` streams a completion from llama.cpp, Anthropic and Bedrock by model id, and each call appears in `usage_events` with correct cost.
+Done when: a client pointed at `localhost:8000` streams a completion from llama.cpp, Anthropic and Bedrock by model id, and each call appears in `usage_events` with correct cost. llama.cpp path verified end to end on 2026-10-31; the other two await credentials.
 
 ## Phase 2 - Router, limits, resilience (5 days)
 

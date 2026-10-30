@@ -25,10 +25,23 @@ Requires Docker, [uv](https://docs.astral.sh/uv/) and Python 3.12 (uv installs i
 
 ```bash
 uv sync                                        # install the project and dev tools
-docker compose -f deploy/compose/docker-compose.yml up -d --wait postgres redis
+docker compose -f deploy/compose/docker-compose.yml --profile llm up -d --wait   # Postgres, Redis, local model
+uv run switchboard-admin bootstrap             # prints an admin API key once
 uv run switchboard                             # gateway on http://localhost:8000
 uv run pytest --cov                            # tests
 ```
+
+Then call it like OpenAI:
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Authorization: Bearer sb_..." -H "content-type: application/json" \
+  -d '{"model":"qwen2.5-1.5b","messages":[{"role":"user","content":"hi"}],"stream":true}'
+```
+
+Every call lands in the usage ledger with its cost; `GET /admin/usage` summarises it per
+tenant and deployment. Add provider keys to `.env` (see `.env.example`) to route to OpenAI,
+Anthropic or Bedrock models from `catalog/models.yaml`.
 
 Optional stacks, enabled with compose profiles:
 

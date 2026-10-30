@@ -170,7 +170,7 @@ One process type; concerns are separated by module, not by service:
 ```
 switchboard/
   api/            OpenAI-compatible routes, admin routes, health
-  auth/           API key hashing (argon2), tenant resolution, RBAC
+  auth/           API key hashing (SHA-256, ADR-0007), tenant resolution, RBAC
   limits/         token bucket rate limiting, budget enforcement
   cache/          exact hash tier, semantic tier, embedding model
   router/         policy engine, classifier, routing table loader, canary weights
@@ -410,7 +410,7 @@ sessions of 4 to 6 hours each. Set an AWS Budget alert at 50 USD and 100 USD on 
 
 ## 7. Security
 
-- API keys are random 32-byte tokens shown once; only an argon2 hash is stored.
+- API keys are random 32-byte tokens shown once; only a SHA-256 hash is stored (ADR-0007).
 - Secrets come from AWS Secrets Manager through external-secrets; nothing in Helm values.
 - IRSA roles per workload; the gateway can invoke Bedrock and read S3, nothing else.
 - NetworkPolicies: only the gateway can reach vLLM; vLLM has no egress except S3.

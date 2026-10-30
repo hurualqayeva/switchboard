@@ -1,0 +1,88 @@
+# Model catalog. Prices are USD per 1M tokens. Keys come from the named env vars.
+# A deployment with a missing key is still listed but calls to it fail with provider_auth.
+
+deployments:
+  # Local CPU model served by llama.cpp (deploy/compose). Stand-in for the vLLM GPU tier.
+  - id: qwen2.5-1.5b
+    provider: openai_compat
+    model: qwen2.5-1.5b
+    base_url: http://localhost:8080/v1
+    context_window: 4096
+    max_output_tokens: 1024
+    pricing: { input_per_1m: 0.02, output_per_1m: 0.06 }   # amortised GPU cost placeholder
+    capabilities: { tools: false, json_mode: true, stream_usage: true }
+    timeout_s: 120
+    tags: [self-hosted, local]
+
+  - id: gpt-4o-mini
+    provider: openai_compat
+    model: gpt-4o-mini
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    context_window: 128000
+    max_output_tokens: 16384
+    pricing: { input_per_1m: 0.15, output_per_1m: 0.60 }
+    capabilities: { tools: true, json_mode: true, vision: true, stream_usage: true }
+    tags: [openai, cheap]
+
+  - id: gpt-4o
+    provider: openai_compat
+    model: gpt-4o
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    context_window: 128000
+    max_output_tokens: 16384
+    pricing: { input_per_1m: 2.50, output_per_1m: 10.00 }
+    capabilities: { tools: true, json_mode: true, vision: true, stream_usage: true }
+    tags: [openai, premium]
+
+  - id: text-embedding-3-small
+    provider: openai_compat
+    model: text-embedding-3-small
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    pricing: { input_per_1m: 0.02 }
+    capabilities: { chat: false, embeddings: true, streaming: false }
+    tags: [openai, embeddings]
+
+  - id: claude-haiku
+    provider: anthropic
+    model: claude-haiku-4-5
+    base_url: https://api.anthropic.com
+    api_key_env: ANTHROPIC_API_KEY
+    context_window: 200000
+    max_output_tokens: 8192
+    pricing: { input_per_1m: 1.00, output_per_1m: 5.00 }
+    capabilities: { tools: true, json_mode: false, vision: true, stream_usage: true }
+    tags: [anthropic, cheap]
+
+  - id: claude-sonnet
+    provider: anthropic
+    model: claude-sonnet-4-5
+    base_url: https://api.anthropic.com
+    api_key_env: ANTHROPIC_API_KEY
+    context_window: 200000
+    max_output_tokens: 8192
+    pricing: { input_per_1m: 3.00, output_per_1m: 15.00 }
+    capabilities: { tools: true, json_mode: false, vision: true, stream_usage: true }
+    tags: [anthropic, premium]
+
+  - id: bedrock-claude-haiku
+    provider: bedrock
+    model: anthropic.claude-3-5-haiku-20241022-v1:0
+    region: us-east-1
+    context_window: 200000
+    max_output_tokens: 8192
+    pricing: { input_per_1m: 0.80, output_per_1m: 4.00 }
+    capabilities: { tools: true, json_mode: false, vision: false, stream_usage: true }
+    tags: [bedrock, cheap]
+
+  - id: bedrock-llama-3-8b
+    provider: bedrock
+    model: meta.llama3-8b-instruct-v1:0
+    region: us-east-1
+    context_window: 8192
+    max_output_tokens: 2048
+    pricing: { input_per_1m: 0.30, output_per_1m: 0.60 }
+    capabilities: { tools: false, json_mode: false, stream_usage: true }
+    tags: [bedrock, cheap]

@@ -1,0 +1,40 @@
+deployments:
+  - id: stub-chat
+    provider: openai_compat
+    model: stub-model
+    base_url: http://stub
+    pricing: { input_per_1m: 1.00, output_per_1m: 2.00 }
+    capabilities: { tools: true, json_mode: true }
+
+  - id: stub-anthropic
+    provider: anthropic
+    model: stub-claude
+    base_url: http://stub
+    api_key_env: STUB_ANTHROPIC_KEY
+    pricing: { input_per_1m: 3.00, output_per_1m: 15.00 }
+    capabilities: { tools: true }
+
+  - id: stub-bedrock
+    provider: bedrock
+    model: stub.bedrock-model
+    region: us-east-1
+    pricing: { input_per_1m: 0.50, output_per_1m: 1.50 }
+
+  - id: stub-embed
+    provider: openai_compat
+    model: stub-embed
+    base_url: http://stub
+    pricing: { input_per_1m: 0.10 }
+    capabilities: { chat: false, embeddings: true, streaming: false }
+
+  - id: no-stream
+    provider: openai_compat
+    model: no-stream
+    base_url: http://stub
+    capabilities: { streaming: false, tools: false }
+
+  - id: disabled-model
+    provider: openai_compat
+    model: disabled
+    base_url: http://stub
+    enabled: false

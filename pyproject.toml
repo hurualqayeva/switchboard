@@ -13,10 +13,15 @@ dependencies = [
     "pydantic-settings>=2.4",
     "httpx>=0.27",
     "structlog>=24.4",
+    "asyncpg>=0.32.0",
+    "pyyaml>=6.0.3",
+    "aioboto3>=15.5.0",
+    "tiktoken>=0.14.0",
 ]
 
 [project.scripts]
 switchboard = "switchboard.main:run"
+switchboard-admin = "switchboard.cli:main"
 
 [dependency-groups]
 dev = [
@@ -27,6 +32,11 @@ dev = [
     "pytest-cov>=5.0",
     "hypothesis>=6.112",
     "pre-commit>=3.8",
+    "testcontainers[postgres]>=4.15.0",
+    "types-pyyaml>=6.0.12.20261030",
+    "asyncpg-stubs>=0.32.0",
+    "types-aiobotocore[bedrock-runtime]>=3.10.0",
+    "asgi-lifespan>=2.1.0",
 ]
 
 [build-system]
@@ -61,6 +71,10 @@ packages = ["switchboard"]
 [[tool.mypy.overrides]]
 module = ["tests.*"]
 disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["aioboto3", "aioboto3.*", "botocore.*", "testcontainers.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

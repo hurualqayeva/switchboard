@@ -29,6 +29,10 @@ class Settings(BaseSettings):
 
     catalog_path: str = "catalog/models.yaml"
 
+    storage: Literal["postgres", "memory"] = "postgres"
+    auto_migrate: bool = Field(default=True, description="Apply pending SQL migrations at startup")
+    ledger_flush_interval_s: float = Field(default=1.0, gt=0)
+
     @property
     def is_local(self) -> bool:
         return self.env == "local"
